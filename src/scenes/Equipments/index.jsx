@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+import clsx from 'clsx';
 import axios from 'axios';
 // import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
@@ -9,19 +10,21 @@ import Header from "../../components/Header";
 const Equipments = () => {
 
   const [equipments, setEquipments] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [interval, setInterval] = useState([]);
 
   const fetchEquipments = async() => {
-    setIsLoading(true);
     const result = await axios.get('/equipments');
     setEquipments(await result.data);
-    setIsLoading(false);
   }
 
   useEffect(() =>{
     fetchEquipments();
     console.log(equipments)
-   },[])
+
+    setTimeout(() => {
+      setInterval(["1"])
+    }, 2000);
+   },[interval])
 
 
   const theme = useTheme();
@@ -32,18 +35,28 @@ const Equipments = () => {
       field: "name",
       headerName: "Equipment",
       flex: 1,
-      cellClassName: "name-column--cell",
+      // cellClassName: "name-column--cell",
     },
     {
       field: "location",
       headerName: "Location",
       flex: 1,
-      cellClassName: "name-column--cell",
+      // cellClassName: "name-column--cell",
     },
     {
       field: "temperature",
       headerName: "Temperature",
       flex: 1,
+      cellClassName: (params) => {
+        if (params.value == null) {
+          return '';
+        }
+  
+        return clsx('temp', {
+          cold: params.value < 70,
+          hot: params.value > 69,
+        });
+      }
     },
     {
       field: "humid",
@@ -97,9 +110,19 @@ const Equipments = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
+          '& .temp.cold': {
+            color: `${colors.greenAccent[200]} !important`,
+          },
+          '& .temp.hot': {
+            color: `${colors.redAccent[500]} `,
+          },
         }}
       >
-        <DataGrid checkboxSelection getRowId={(row) => row._id} rows={equipments} columns={columns} />
+        <DataGrid checkboxSelection 
+                  getRowId={(row) => row._id}
+                  rows={equipments}
+                  columns={columns}
+                  />
       </Box>
     </Box>
   );

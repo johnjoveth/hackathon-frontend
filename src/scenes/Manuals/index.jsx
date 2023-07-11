@@ -2,92 +2,63 @@ import React, {useEffect, useState} from 'react'
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import clsx from 'clsx';
 import axios from 'axios';
-// import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
 
-const Equipments = () => {
+const Manuals = () => {
 
-  const [equipments, setEquipments] = useState([]);
-  const [interval, setInterval] = useState([]);
+  const [manual, setManual] = useState([]);
 
-  const fetchEquipments = async() => {
-    const result = await axios.get('/equipments');
-    setEquipments(await result.data);
+  const fetchManuals = async() => {
+    const result = await axios.get('/manual');
+    setManual(await result.data);
   }
 
   useEffect(() =>{
-    fetchEquipments();
-    console.log(equipments)
-
-    setTimeout(() => {
-      setInterval(["1"])
-    }, 2000);
-   },[interval])
+    fetchManuals();
+    console.log(manual)
+   })
 
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
-    { field: "id", headerName: "ID" },
+    // { field: "id", headerName: "ID" },
     {
       field: "name",
-      headerName: "Equipment",
-      flex: 1,
-      renderCell: (params) => (
-        <a href={`/manuals`} style={{ color: 'green' }} target="_blank" rel="noopener noreferrer">
-          {params.value} 
-        </a>
-      ),
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "location",
-      headerName: "Location",
-      flex: 1,
+      headerName: "Equipment Name",
+      flex: 0.3,
       // cellClassName: "name-column--cell",
     },
     {
-      field: "temperature",
-      headerName: "Temperature",
+      field: "troubleShootStep",
+      headerName: "Troubleshooting Step",
       flex: 1,
-      cellClassName: (params) => {
-        if (params.value == null) {
-          return '';
-        }
-  
-        return clsx('temp', {
-          cold: params.value < 39,
-          hot: params.value > 38,
-        });
-      }
+      renderCell: (params) => (
+        <Typography style={{ whiteSpace: 'pre-line' }}>
+          {
+            params.value.join(' \n')
+          }
+        </Typography>
+      )
     },
     {
-      field: "humid",
-      headerName: "Humidity",
+      field: "escapeRoute",
+      headerName: "Escape Route",
       flex: 1,
-    },
-    {
-      field: "active",
-      headerName: "Active",
-      flex: 1,
-      // renderCell: (params) => (
-      //   <Typography color={colors.greenAccent[500]}>
-      //     ${params.row.cost}
-      //   </Typography>
-      // ),
-    },
-    {
-      field: "nextPM",
-      headerName: "Next Maintenance",
-      flex: 1,
+      renderCell: (params) => (
+        <div style={{ justifyContent: 'center', display: 'block'}}>
+        <a href={params.value} target="_blank" rel="noopener noreferrer">
+          <img src={params.value} alt="Escape Route" style={{ width: 250, height: 250}} />
+        </a>
+        </div>
+      ),
     },
   ];
 
   return (
     <Box m="20px">
-      <Header title="EQUIPMENTS" subtitle="List of equipments" />
+      <Header title="MANUALS" subtitle="List of equipment manuals" />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -124,8 +95,9 @@ const Equipments = () => {
         }}
       >
         <DataGrid checkboxSelection 
+                  rowHeight={300}
                   getRowId={(row) => row._id}
-                  rows={equipments}
+                  rows={manual}
                   columns={columns}
                   />
       </Box>
@@ -133,4 +105,4 @@ const Equipments = () => {
   );
 };
 
-export default Equipments;
+export default Manuals;

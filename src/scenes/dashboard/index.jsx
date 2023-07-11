@@ -143,7 +143,7 @@ const Dashboard = () => {
                 fontWeight="600"
                 color={colors.grey[100]}
               >
-                Revenue Generated
+                Equipments
               </Typography>
               <Typography
                 variant="h3"
@@ -253,7 +253,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Sales Quantity
+            Materials Used
           </Typography>
           <Box height="250px" mt="-20px">
             <BarChart isDashboard={true} />
